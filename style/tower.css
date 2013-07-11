@@ -1,0 +1,23 @@
+table.display {
+    margin-left: auto;
+    margin-right: auto;
+    border: solid black 1px;
+    border-collapse: collapse;
+    empty-cells: show;
+    table-layout: fixed;
+}
+
+
+td.input, td.display {
+    border: solid black 1px;
+    height: 1.2em;
+    width: 1.2em;
+}
+
+td.active {
+    background-color: green;
+}
+
+td.error {
+    background-color: red;
+}
