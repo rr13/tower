@@ -16,6 +16,7 @@
 <script src="lib/jquery.mobile-1.3.1.min.js"></script>
 
 <script src="script/math.js"></script>
+<script src="script/model.js"></script>
 <script src="script/dom.js"></script>
 <script src="script/ui.js"></script>
 
@@ -26,6 +27,11 @@
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
 <div data-role="header" >
+<a href="#" id="goButton">Go!</a>
+<div data-role="controlgroup" data-type="horizontal" class="ui-btn-right">
+<a href="index.html#configurationPage" data-role="button" data-icon="gear" data-iconpos="notext">Configuration</a>
+<a href="index.html#historyPage" data-role="button" data-icon="bars" data-iconpos="notext">History</a>
+</div>
 <h1>Solve</h1>
 </div>
 
@@ -61,5 +67,42 @@
 </div>
 </div>
 
+<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+<div id="historyPage" data-role="page" style="text-align:center">
+<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+
+<div data-role="header">
+<a href="#" id="clearHistoryButton">Clear</a>
+<a href="index.html#towerPage" data-rel="back">Back</a>
+<h1>History</h1>
+</div>
+
+<div data-role="content">
+<ul data-role="listview" id="historyList">
+</ul>
+</div>
+
+</div>
+
+<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+<div id="configurationPage" data-role="page" style="text-align:center">
+<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+
+<div data-role="header">
+<a href="index.html#towerPage" data-rel="back" id="configBackButton">Back</a>
+<h1>Configuration</h1>
+</div>
+
+<div data-role="content">
+
+<form>
+    <div data-role="fieldcontain">
+        <label for="digitSlider">Slider:</label>
+        <input name="digitSlider" id="digitSlider" min="1" max="9" value="4" type="range">
+    </div>
+</form>
+
+</div>
+</div>
 </body>
 </html>

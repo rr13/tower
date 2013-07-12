@@ -7,29 +7,43 @@ rru.tower.model = (function () {
 
         model = [],
 
-        // functions
+        // private functions
+
         initModel,
         storeModel,
         loadModel,
         deleteModel,
+
+        // public functions
+
         getAllUnits,
         removeAllUnits,
-        createUnit,
-        updateUnit; 
+        storeUnit;
 
-    storeModel = function () {
+/*------------------------------*
+ */ storeModel = function () { /*
+ *------------------------------*/
+
         window.localStorage.setItem(LOCALSTORAGE_KEY, JSON.stringify(model));
     };
 
-    loadModel = function () {
+/*-----------------------------*
+ */ loadModel = function () { /*
+ *-----------------------------*/
+
         model = JSON.parse(window.localStorage.getItem(LOCALSTORAGE_KEY));
     };
+/*-------------------------------*
+ */ deleteModel = function () { /*
+ *-------------------------------*/
 
-    deleteModel = function () {
         window.localStorage.removeItem(LOCALSTORAGE_KEY);
-    }
+    };
 
-    initModel = function () {
+/*-----------------------------*
+ */ initModel = function () { /*
+ *-----------------------------*/
+
         if (!window.localStorage.getItem(LOCALSTORAGE_KEY)) {
             storeModel();
         } else {
@@ -37,44 +51,42 @@ rru.tower.model = (function () {
         }
     };
 
-    getAllUnits = function () {
+/*-------------------------------*
+ */ getAllUnits = function () { /*
+ *-------------------------------*/
+
         return model;
     };
 
-    removeAllUnits = function () {
+/*----------------------------------*
+ */ removeAllUnits = function () { /*
+ *----------------------------------*/
+
         model = [];
         deleteModel();
         initModel();
     };
 
-    createUnit = function (aConfiguration) {
+/*-------------------------------------------*
+ */ storeUnit = function (number, errors) { /*
+ *-------------------------------------------*/
+
         var unit = {
-            time: new Date().getTime(),
-            streak: 0,
-            correct: 0,
-            types: aConfiguration
-        }
+                time: new Date().getTime(),
+                number: number,
+                errors: errors
+            };
+
         model.push(unit);
         storeModel();
     };
 
-    updateUnit = function (streak, correct) {
-        var lastIndex = model.length-1;
-        if (model[lastIndex].streak < streak) {
-            model[lastIndex].streak = streak;
-        }
-        model[lastIndex].correct = correct;
-        storeModel();
-    }
-
-
     initModel();
 
     return {
-        createUnit: createUnit,
-        updateUnit: updateUnit,
+        storeUnit: storeUnit,
         getAllUnits: getAllUnits,
         removeAllUnits: removeAllUnits
     };
 
-} ());
+}());

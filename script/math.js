@@ -7,16 +7,16 @@ rru.tower.math = (function () {
         getTower,
         randomInt;
 
-    /*--------------------------------------*
-     */ randomInt = function (low, high) { /*
-     *--------------------------------------*/
-	    var diff = high - low;
-	    return Math.round(low + Math.random() * diff);
+/*--------------------------------------*
+ */ randomInt = function (low, high) { /*
+ *--------------------------------------*/
+        var diff = high - low;
+        return Math.round(low + Math.random() * diff);
     };
 
-    /*-----------------------------*
-     */ getTower = function (n) { /*
-     *-----------------------------*/
+/*-----------------------------*
+ */ getTower = function (n) { /*
+ *-----------------------------*/
         var tower = [],
             i;
 
@@ -30,20 +30,19 @@ rru.tower.math = (function () {
             n /= i;
             tower.push(n);
         }
-        
+
         return tower;
     };
 
-    /*----------------------------------------*
-     */ getRandomTower = function (digits) { /*
-     *----------------------------------------*/
-     
-        return getTower(randomInt(Math.pow(10,digits-1), Math.pow(10,digits)-1));
-     
+/*----------------------------------------*
+ */ getRandomTower = function (digits) { /*
+ *----------------------------------------*/
+
+        return getTower(randomInt(Math.pow(10, digits - 1), Math.pow(10, digits) - 1));
     };
 
     return {
         getRandomTower: getRandomTower
     };
 
-} ());
+}());
