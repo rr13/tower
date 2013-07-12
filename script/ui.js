@@ -21,6 +21,12 @@ rru.tower.ui = (function ($, math, model, dom) {
         isCorrectDigit,
         isLastDigitInRound,
 
+        blinkAnimation,
+        blink,
+        timeoutTime,
+        blinkTimes,
+        upDown,
+
         nrKeyEventHandler,
         clearHistoryButtonEventHandler;
 
@@ -45,6 +51,39 @@ rru.tower.ui = (function ($, math, model, dom) {
  *--------------------------------------*/
 
         return inputDigits === (theTower[round].toString()).length;
+    };
+
+/*-------------------------*
+ */ blink = function () { /*
+ *-------------------------*/
+
+        if (upDown) {
+            dom.setDisplay(theTower[round - 1] + "  ");
+            dom.setInput("");
+        } else {
+            dom.setInput(theTower[round - 1] + "  ");
+            dom.setDisplay("");
+        }
+
+        upDown = !upDown;
+        blinkTimes -= 1;
+        timeoutTime -= 70;
+        if (blinkTimes > 0) {
+            window.setTimeout('rru.tower.ui.blink()', timeoutTime);
+        } else {
+            prepareRound();
+        }
+    };
+
+/*----------------------------------*
+ */ blinkAnimation = function () { /*
+ *----------------------------------*/
+
+        timeoutTime = 350;
+        blinkTimes = 5;
+        upDown = true;  // true .. show in display, false .. show in input
+
+        window.setTimeout('rru.tower.ui.blink()', timeoutTime);
     };
 
 /*-----------------------------*
@@ -123,7 +162,8 @@ rru.tower.ui = (function ($, math, model, dom) {
 
                     dom.setInputCellsInactive();
                     state = INACTIVE;
-                    window.setTimeout('rru.tower.ui.prepareRound()', 1000);
+                    //window.setTimeout('rru.tower.ui.prepareRound()', 1000);
+                    blinkAnimation();
                 }
             }
         } else {
@@ -162,7 +202,7 @@ rru.tower.ui = (function ($, math, model, dom) {
     });
 
     return {
-        prepareRound: prepareRound
+        blink: blink
     };
 
 }($, rru.tower.math, rru.tower.model, rru.tower.dom));
