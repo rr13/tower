@@ -27,6 +27,8 @@ rru.tower.ui = (function ($, math, model, dom) {
         blinkTimes,
         upDown,
 
+        solveDisplay,
+
         nrKeyEventHandler,
         clearHistoryButtonEventHandler;
 
@@ -51,6 +53,13 @@ rru.tower.ui = (function ($, math, model, dom) {
  *--------------------------------------*/
 
         return inputDigits === (theTower[round].toString()).length;
+    };
+
+/*--------------------------------*
+ */ solveDisplay = function () { /*
+ *--------------------------------*/
+        dom.setDisplay("CONGRATULATIONS");
+        dom.setInput("Errors: " + errors);
     };
 
 /*-------------------------*
@@ -155,14 +164,12 @@ rru.tower.ui = (function ($, math, model, dom) {
 
                     dom.setInputCellsInactive();
                     model.storeUnit(theTower[0], errors);
-                    window.alert("Solved! (Errors: " + errors + ")");
-                    initTower();
+                    window.setTimeout("rru.tower.ui.solveDisplay()", 500);
 
                 } else {
 
                     dom.setInputCellsInactive();
                     state = INACTIVE;
-                    //window.setTimeout('rru.tower.ui.prepareRound()', 1000);
                     blinkAnimation();
                 }
             }
@@ -189,7 +196,6 @@ rru.tower.ui = (function ($, math, model, dom) {
         dom.setDisplay("Press Go!   ");
         dom.setInput("to start    ");
 
-
         $(".nrKey").tap(nrKeyEventHandler);
         $("#goButton").tap(initTower);
         $("#clearHistoryButton").tap(clearHistoryButtonEventHandler);
@@ -202,7 +208,8 @@ rru.tower.ui = (function ($, math, model, dom) {
     });
 
     return {
-        blink: blink
+        blink: blink,
+        solveDisplay: solveDisplay
     };
 
 }($, rru.tower.math, rru.tower.model, rru.tower.dom));
