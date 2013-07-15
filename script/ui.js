@@ -1,7 +1,7 @@
 var rru = rru || {};
 rru.tower = rru.tower || {};
 
-rru.tower.ui = (function ($, math, model, dom) {
+rru.tower.ui = (function ($, math, model, dom, fx) {
 
     var ACTIVE = 1,     // states: active - allow inputs
         INACTIVE = 0,
@@ -21,13 +21,6 @@ rru.tower.ui = (function ($, math, model, dom) {
         isCorrectDigit,
         isLastDigitInRound,
 
-        blinkAnimation,
-        blink,
-        timeoutTime,
-        blinkTimes,
-        upDown,
-
-        solveDisplay,
 
         nrKeyEventHandler,
         clearHistoryButtonEventHandler;
@@ -53,46 +46,6 @@ rru.tower.ui = (function ($, math, model, dom) {
  *--------------------------------------*/
 
         return inputDigits === (theTower[round].toString()).length;
-    };
-
-/*--------------------------------*
- */ solveDisplay = function () { /*
- *--------------------------------*/
-        dom.setDisplay("CONGRATULATIONS");
-        dom.setInput("Errors: " + errors);
-    };
-
-/*-------------------------*
- */ blink = function () { /*
- *-------------------------*/
-
-        if (upDown) {
-            dom.setDisplay(theTower[round - 1] + "  ");
-            dom.setInput("");
-        } else {
-            dom.setInput(theTower[round - 1] + "  ");
-            dom.setDisplay("");
-        }
-
-        upDown = !upDown;
-        blinkTimes -= 1;
-        timeoutTime -= 70;
-        if (blinkTimes > 0) {
-            window.setTimeout('rru.tower.ui.blink()', timeoutTime);
-        } else {
-            prepareRound();
-        }
-    };
-
-/*----------------------------------*
- */ blinkAnimation = function () { /*
- *----------------------------------*/
-
-        timeoutTime = 350;
-        blinkTimes = 5;
-        upDown = true;  // true .. show in display, false .. show in input
-
-        window.setTimeout('rru.tower.ui.blink()', timeoutTime);
     };
 
 /*-----------------------------*
@@ -164,13 +117,13 @@ rru.tower.ui = (function ($, math, model, dom) {
 
                     dom.setInputCellsInactive();
                     model.storeUnit(theTower[0], errors);
-                    window.setTimeout("rru.tower.ui.solveDisplay()", 500);
+                    fx.towerSolved(errors);
 
                 } else {
 
                     dom.setInputCellsInactive();
                     state = INACTIVE;
-                    blinkAnimation();
+                    fx.changeRound(theTower[round - 1],prepareRound);
                 }
             }
         } else {
@@ -207,9 +160,4 @@ rru.tower.ui = (function ($, math, model, dom) {
         dom.createHistory(model.getAllUnits());
     });
 
-    return {
-        blink: blink,
-        solveDisplay: solveDisplay
-    };
-
-}($, rru.tower.math, rru.tower.model, rru.tower.dom));
+}($, rru.tower.math, rru.tower.model, rru.tower.dom, rru.tower.fx));
