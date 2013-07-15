@@ -54,7 +54,7 @@ rru.tower.ui = (function ($, math, model, dom, fx) {
 
         theTower = math.getRandomTower(dom.getConfigDigits());
 
-        round = 1;
+        round = 16;
         errors = 0;
         prepareRound();
 

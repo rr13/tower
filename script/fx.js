@@ -14,6 +14,11 @@ rru.tower.fx = (function (dom) {
         floatUpAnimation,
         floatUp,
         floatLen,
+        
+        marqueeAnimation,
+        marquee,
+        firstPos,
+        solveText,
 
         solveDisplay,
         theErrors,
@@ -21,10 +26,47 @@ rru.tower.fx = (function (dom) {
         changeRound,
         towerSolved;
 
+/*---------------------------*
+ */ marquee = function () { /*
+ *---------------------------*/
+
+        var display = "",
+            i = 0;
+            
+        if (firstPos == 0) {
+            dom.setInput("");
+        }
+
+        if (firstPos <= solveText.length) {
+            for (i = 0; i < dom.getMaxDigits; i += 1) {
+                display += " ";
+            }
+
+            display += solveText.substr(0, firstPos);
+            dom.setDisplay(display);
+            
+            firstPos += 1;
+            window.setTimeout('rru.tower.fx.marquee()', 60);
+
+
+        } else {
+            dom.setInput("Errors: " + theErrors);
+        }
+
+    };
+
+/*------------------------------------*
+ */ marqueeAnimation = function () { /*
+ *------------------------------------*/
+ 
+        firstPos = 0;
+        window.setTimeout('rru.tower.fx.marquee()',500);
+    };    
+
 /*--------------------------------------*
  */ solveDisplay = function () { /*
  *--------------------------------------*/
-        dom.setDisplay("CONGRATULATIONS");
+        dom.setDisplay(solveText);
         dom.setInput("Errors: " + theErrors);
     };
 
@@ -88,7 +130,7 @@ rru.tower.fx = (function (dom) {
             dom.setDisplay(display);
             dom.setInput(input);
 
-            window.setTimeout('rru.tower.fx.floatUp()', 50);
+            window.setTimeout('rru.tower.fx.floatUp()', 60);
 
         } else {
             theContinueFunction();
@@ -120,7 +162,10 @@ rru.tower.fx = (function (dom) {
  *-------------------------------------*/
 
         theErrors = errors;
-        window.setTimeout("rru.tower.fx.solveDisplay()", 500);
+        solveText = "CONGRATULATIONS";
+
+        marqueeAnimation();
+        //window.setTimeout("rru.tower.fx.marqueeAnimation()", 500);
     };
 
     return {
@@ -130,6 +175,9 @@ rru.tower.fx = (function (dom) {
 
         blink: blink,
         floatUp: floatUp,
+
+        marquee: marquee,
+        marqueeAnimation: marqueeAnimation,
         solveDisplay: solveDisplay
     };
 
