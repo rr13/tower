@@ -3,17 +3,20 @@ rru.tower = rru.tower || {};
 
 rru.tower.ui = (function ($, math, model, dom, fx) {
 
-    var ACTIVE = 1,     // states: active - allow inputs
+    var ACTIVE = 1,     // inputStates: active - allow inputs
         INACTIVE = 0,
-        state = INACTIVE,
+        inputState = INACTIVE,
+        
+        state = {
+            tower: [],
+            round: 0,   // 1 .. 8 -> *2 .. *9, 9 .. 16 -> /2 .. /9
+            errors: 0,
+            input: ""
+        },
 
         inputPos,       // index of display cell for next input 
         inputDirection, // -1 ... right to left, +1 ... left to right
         inputDigits,    // nr of digits input 
-
-        theTower,
-        round,          // 1 .. 8 -> *2 .. *9, 9 .. 16 -> /2 .. /9
-        errors,
 
         initDomAndEvents, // private functions
         initTower,
@@ -29,10 +32,10 @@ rru.tower.ui = (function ($, math, model, dom, fx) {
  */ isCorrectDigit = function (key) { /*
  *-------------------------------------*/
 
-        var solutionStr = theTower[round].toString(),
+        var solutionStr = state.tower[state.round].toString(),
             ctrlPos;
 
-        if ((round >= 1) && (round <= 8)) {
+        if ((state.round >= 1) && (state.round <= 8)) {
             ctrlPos = solutionStr.length - 1 - inputDigits;
         } else {
             ctrlPos = inputDigits;
@@ -45,17 +48,15 @@ rru.tower.ui = (function ($, math, model, dom, fx) {
  */ isLastDigitInRound = function () { /*
  *--------------------------------------*/
 
-        return inputDigits === (theTower[round].toString()).length;
+        return inputDigits === (state.tower[state.round].toString()).length;
     };
 
 /*-----------------------------*
  */ initTower = function () { /*
  *-----------------------------*/
 
-        theTower = math.getRandomTower(dom.getConfigDigits());
-
-        round = 1;
-        errors = 0;
+        state.round = 1;
+        state.errors = 0;
         prepareRound();
 
     };
@@ -64,20 +65,20 @@ rru.tower.ui = (function ($, math, model, dom, fx) {
  */ prepareRound = function () { /*
  *--------------------------------*/
 
-        var display = theTower[round - 1];
+        var display = state.tower[state.round - 1];
 
-        if ((round >= 1) && (round <= 8)) {
+        if ((state.round >= 1) && (state.round <= 8)) {
             display += "*";
-            display += round + 1;
+            display += state.round + 1;
 
             inputPos = dom.getMaxDigits() - 3;
             inputDirection = -1;
         } else {
             display += "/";
-            display += round - 7;
+            display += state.round - 7;
 
-            //console.log(theTower[round]);
-            inputPos = dom.getMaxDigits() - (theTower[round].toString()).length - 2;
+            //console.log(state.tower[state.round]);
+            inputPos = dom.getMaxDigits() - (state.tower[state.round].toString()).length - 2;
             inputDirection = 1;
         }
 
@@ -86,20 +87,28 @@ rru.tower.ui = (function ($, math, model, dom, fx) {
         dom.setInputCellActive(inputPos);
 
         inputDigits = 0;
-        state = ACTIVE;
+        inputState = ACTIVE;
 
     };
 
 /*------------------------------------*
- */ nrKeyEventHandler = function () { /*
+ */ nrKeyEventHandler = function (e) { /*
  *------------------------------------*/
 
-        if (state === INACTIVE) {
+        e.stopImmediatePropagation();
+
+        if (inputState === INACTIVE) {
             return;
         }
 
         var key = $(this).text();
         dom.setInputCellValue(inputPos, key);
+        
+        if (inputDirection > 0) {
+            state.input = state.input + key;
+        } else {
+            state.input = key + state.input;
+        }
 
         if (isCorrectDigit(key)) {
             inputDigits += 1;
@@ -111,24 +120,24 @@ rru.tower.ui = (function ($, math, model, dom, fx) {
 
             } else {
 
-                round += 1;
+                state.round += 1;
 
-                if (round === 17) {
+                if (state.round === 17) {
 
                     dom.setInputCellsInactive();
-                    model.storeUnit(theTower[0], errors);
-                    fx.towerSolved(errors);
+                    model.storeUnit(state.tower[0], state.errors);
+                    fx.towerSolved(state.errors);
 
                 } else {
 
                     dom.setInputCellsInactive();
-                    state = INACTIVE;
-                    fx.changeRound(theTower[round - 1],prepareRound);
+                    inputState = INACTIVE;
+                    fx.changeRound(state.tower[state.round - 1],prepareRound);
                 }
             }
         } else {
             dom.setInputCellError(inputPos);
-            errors += 1;
+            state.errors += 1;
         }
     };
 

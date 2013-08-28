@@ -4,3 +4,13 @@ Angezeigt wird nur jeweils die letzte vorhandene Zeile,
 unterhalb müssen die Ziffern einzeln an der Cursorstelle eingegeben werden.
 Fehler werden nicht erlaubt, aber mitgezählt.
 
+Zustand soll immer gespeichert werden
+Model:
+History
+State
+Version
+
+Version: Um Änderung im Datenmodell erkennen zu können
+History: Array von History Einträgen
+State: theTower, round, errors, input
+

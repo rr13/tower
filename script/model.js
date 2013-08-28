@@ -4,11 +4,13 @@ rru.tower = rru.tower || {};
 rru.tower.model = (function () {
 
     var LOCALSTORAGE_KEY = "rruTower.model",
+        CURRENT_VERSION = "1.0",
 
-        model = [],
+        theModel,
 
         // private functions
 
+        Model,
         initModel,
         storeModel,
         loadModel,
@@ -20,18 +22,27 @@ rru.tower.model = (function () {
         removeAllUnits,
         storeUnit;
 
+/*-------------------------*
+ */ Model = function () { /*
+ *-------------------------*/
+
+    this.version = CURRENT_VERSION;
+    this.history = [];
+    this.state = {};
+}
+
 /*------------------------------*
  */ storeModel = function () { /*
  *------------------------------*/
 
-        window.localStorage.setItem(LOCALSTORAGE_KEY, JSON.stringify(model));
+        window.localStorage.setItem(LOCALSTORAGE_KEY, JSON.stringify(theModel));
     };
 
 /*-----------------------------*
  */ loadModel = function () { /*
  *-----------------------------*/
 
-        model = JSON.parse(window.localStorage.getItem(LOCALSTORAGE_KEY));
+        theModel = JSON.parse(window.localStorage.getItem(LOCALSTORAGE_KEY));
     };
 /*-------------------------------*
  */ deleteModel = function () { /*
@@ -44,10 +55,19 @@ rru.tower.model = (function () {
  */ initModel = function () { /*
  *-----------------------------*/
 
+        var oldModel;
+
         if (!window.localStorage.getItem(LOCALSTORAGE_KEY)) {
+            theModel = new Model();
             storeModel();
         } else {
             loadModel();
+            if (! 'version' in theModel) { // model version update
+                oldModel = theModel;
+                theModel = new Model();
+                theModel.history = oldModel;
+                storeModel();
+            }
         }
     };
 
@@ -55,14 +75,13 @@ rru.tower.model = (function () {
  */ getAllUnits = function () { /*
  *-------------------------------*/
 
-        return model;
+        return theModel;
     };
 
 /*----------------------------------*
  */ removeAllUnits = function () { /*
  *----------------------------------*/
 
-        model = [];
         deleteModel();
         initModel();
     };
@@ -77,7 +96,7 @@ rru.tower.model = (function () {
                 errors: errors
             };
 
-        model.push(unit);
+        theModel.push(unit);
         storeModel();
     };
 
